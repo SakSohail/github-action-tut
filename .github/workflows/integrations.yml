@@ -1,0 +1,57 @@
+name: Node.js CI
+# on push to master branch we run the below jobs
+# on pull request on master branch we run the below jobs
+
+on:
+  push:
+    branches: ['master']
+  pull_request:
+    branches: ['master']
+
+jobs:
+  # you can name anything to build
+  build:
+    # jobs run github server which uses ubuntu-latest o.s
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        # tell to run these on below nodejs versions
+        node-version: [18.x, 20.x, 22.x]
+    steps:
+      # tells github to checkout which ur using like feature branch
+      - uses: actions/checkout@v4
+      #optional , tells github to setup node environment
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      - name: 'Installing dependanies'
+        run: npm install
+
+      - name: 'Building project'
+        run: npm run build
+  # you can name anything to build
+  unit-tests:
+    # jobs run github server which uses ubuntu-latest o.s
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        # tell to run these on below nodejs versions
+        node-version: [18.x, 20.x, 22.x]
+    steps:
+      # tells github to checkout which ur using like feature branch
+      - uses: actions/checkout@v4
+      #optional , tells github to setup node environment
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      - name: 'Installing dependanies'
+        run: npm install
+
+      - name: 'Running tests cases'
+        run: npm run test
