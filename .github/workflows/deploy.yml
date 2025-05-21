@@ -1,0 +1,20 @@
+name: Node.js Deploy
+# on push to master branch we run the below jobs
+# on pull request on master branch we run the below jobs
+
+on:
+  push:
+    branches: ['master']
+
+jobs:
+  # you can name anything
+  deploy:
+    # jobs run github server which uses ubuntu-latest o.s
+    runs-on: ubuntu-latest
+
+    steps:
+      # tells github to checkout which ur using like feature branch
+      - uses: actions/checkout@v4
+      - run: docker build . -t saksohail/nestjs-app
+      - run: echo "${{secrets.DOCKERHUB_PASSWORD}}" | docker login -u ${{secrets.DOCKERHUB_USERNAME}} --password-stdin
+      - run: docker push saksohail/nestjs-app:latest
